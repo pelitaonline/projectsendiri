@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Timeline Perkembangan Felicia</title>
+<style>
+  :root{
+    --bg:#FFF8F3;
+    --card:#FFFFFF;
+    --ink:#5B5670;
+    --soft:#8E89A3;
+    --line:#EDE6EF;
+    --pink:#F8C8DC; --pink-k:#D9769F;
+    --lav:#D9CCF2;  --lav-k:#8B72C4;
+    --mint:#C8EBD7; --mint-k:#4E9E78;
+    --sky:#C5E1F5;  --sky-k:#4A8CBF;
+    --peach:#FFD9C2;--peach-k:#D98A5C;
+    --butter:#FFF0B8;--butter-k:#BF9B2E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:ui-rounded,"Nunito","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+    line-height:1.5;padding:20px 16px 40px;
+  }
+  .wrap{max-width:1100px;margin:0 auto}
+  header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+  h1{font-size:24px;font-weight:800;letter-spacing:-.2px}
+  h1 span{color:var(--pink-k)}
+  .sub{color:var(--soft);font-size:14px}
+  details.set{background:var(--card);border-radius:16px;padding:10px 14px}
+  details.set summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--lav-k);list-style:none}
+  details.set summary::-webkit-details-marker{display:none}
+  .fields{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+  .fields label{display:flex;flex-direction:column;font-size:12px;color:var(--soft);gap:4px}
+  .fields input{font:inherit;font-size:14px;color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:6px 10px;background:#fff}
+  .fields input:focus{outline:none;border-color:var(--lav)}
+  .btn{font:inherit;font-size:13px;font-weight:700;border:0;border-radius:10px;padding:8px 12px;background:var(--lav);color:var(--lav-k);cursor:pointer;align-self:flex-end}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .stat{border-radius:18px;padding:14px 16px}
+  .stat small{display:block;font-size:12px;font-weight:700;opacity:.85}
+  .stat b{display:block;font-size:22px;line-height:1.25;margin-top:2px}
+  .stat em{font-style:normal;font-size:12px;opacity:.85}
+  .s1{background:var(--pink);color:#9C4A6C}
+  .s2{background:var(--lav);color:#5E4A94}
+  .s3{background:var(--mint);color:#2F6F52}
+  .s4{background:var(--sky);color:#2F6590}
+
+  .panel{background:var(--card);border-radius:22px;padding:16px 0 12px;margin-bottom:16px}
+  .panel h2{font-size:15px;font-weight:800;padding:0 18px 4px}
+  .panel .hint{font-size:12px;color:var(--soft);padding:0 18px 8px}
+  .scroll{overflow-x:auto;padding:0 8px 8px;scrollbar-width:thin;scrollbar-color:var(--lav) transparent}
+  .tl{position:relative}
+  .track{position:absolute;top:60px;height:6px;border-radius:6px;background:var(--line)}
+  .fill{position:absolute;top:60px;height:6px;border-radius:6px;background:var(--pink-k)}
+  .marker{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--pink-k);pointer-events:none;z-index:3}
+  .bubble{position:absolute;top:0;left:0;transform:translateX(-50%);white-space:nowrap;background:var(--pink-k);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px}
+  .cols{display:flex;position:relative;z-index:2}
+  .col{flex:0 0 auto;width:104px;border:0;background:transparent;font:inherit;color:inherit;cursor:pointer;
+       padding:44px 4px 8px;border-radius:18px;display:flex;flex-direction:column;align-items:center;text-align:center}
+  .col.sel{background:var(--c)}
+  .dot{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;
+       background:#fff;border:3px solid var(--line);color:var(--soft)}
+  .col.done .dot{background:var(--c);border-color:var(--c);color:var(--k)}
+  .col.next .dot{background:#fff;border:3px dashed var(--k);color:var(--k)}
+  .lbl{font-weight:800;font-size:13px;margin-top:8px}
+  .dt{font-size:11px;color:var(--soft)}
+  .col.sel .dt{color:var(--k)}
+  .chart{position:relative;width:100%;height:112px;margin-top:10px;display:flex;align-items:flex-end;justify-content:center}
+  .bar{width:34px;border-radius:10px 10px 4px 4px;background:var(--c);position:relative;min-height:6px}
+  .col.sel .bar{background:#fff}
+  .pct{position:absolute;top:-17px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:800;color:var(--k)}
+  .grid{position:absolute;left:0;right:0;border-top:1px dashed var(--line);pointer-events:none}
+  .gl{position:absolute;left:0;font-size:9px;color:var(--soft);padding-left:2px}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;padding:6px 18px 0;font-size:12px;color:var(--soft)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:5px}
+
+  .detail{background:var(--card);border-radius:22px;padding:18px}
+  .dhead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .dhead h3{font-size:19px;font-weight:800}
+  .chip{font-size:12px;font-weight:800;border-radius:20px;padding:4px 12px;background:var(--c);color:var(--k)}
+  .dinfo{font-size:13px;color:var(--soft);margin-bottom:12px}
+  .items{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+  .item{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:14px;padding:11px 12px;cursor:pointer}
+  .item input{width:20px;height:20px;margin-top:2px;accent-color:var(--k);flex:0 0 auto;cursor:pointer}
+  .item span.t{font-size:14px}
+  .tag{display:inline-block;font-size:10px;font-weight:800;border-radius:8px;padding:1px 7px;margin-bottom:2px;background:var(--c);color:var(--k)}
+  .item.ok span.t{text-decoration:line-through;opacity:.55}
+  textarea{width:100%;margin-top:14px;font:inherit;font-size:14px;color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:10px 12px;min-height:76px;resize:vertical;background:#fff}
+  textarea:focus{outline:none;border-color:var(--c)}
+  .note{font-size:12px;color:var(--soft);margin-top:18px;text-align:center}
+  @media(max-width:520px){h1{font-size:20px}.stat b{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Perjalanan <span id="nm">Felicia</span></h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <details class="set">
+      <summary>Atur data</summary>
+      <div class="fields">
+        <label>Nama anak<input id="inName" type="text" maxlength="30"></label>
+        <label>Tanggal lahir<input id="inBirth" type="date"></label>
+        <label>Hari H (tanggal acuan)<input id="inRef" type="date"></label>
+        <button class="btn" id="btnToday" type="button">Pakai hari ini</button>
+      </div>
+    </details>
+  </header>
+
+  <section class="stats" id="stats"></section>
+
+  <section class="panel">
+    <h2>Grafik progress timeline</h2>
+    <p class="hint">Geser ke samping. Ketuk satu titik untuk melihat tahap perkembangan dan mencentang yang sudah dicapai.</p>
+    <div class="scroll" id="scroll"><div class="tl" id="tl"></div></div>
+    <div class="legend">
+      <span><i style="background:var(--pink-k)"></i>Garis progres sampai Hari H</span>
+      <span><i style="border:2px dashed var(--lav-k)"></i>Titik berikutnya</span>
+      <span><i style="background:var(--mint)"></i>Batang = % capaian dicentang</span>
+    </div>
+  </section>
+
+  <section class="detail" id="detail"></section>
+
+  <p class="note">Daftar tahap perkembangan hanyalah panduan umum. Setiap anak berkembang dengan kecepatannya sendiri. Jika ada kekhawatiran, konsultasikan dengan dokter anak, bidan, atau posyandu.</p>
+</div>
+
+<script>
+(function(){
+  var COLORS=[['--pink','--pink-k'],['--lav','--lav-k'],['--mint','--mint-k'],['--sky','--sky-k'],['--peach','--peach-k'],['--butter','--butter-k']];
+  var OFFS=[0,1,2,3,4,5,6,7,8,9,10,11,12,24,36,48,60];
+  var LAB=['Lahir','1 bln','2 bln','3 bln','4 bln','5 bln','6 bln','7 bln','8 bln','9 bln','10 bln','11 bln','1 th','2 th','3 th','4 th','5 th'];
+  var DOT=['★','1','2','3','4','5','6','7','8','9','10','11','1th','2th','3th','4th','5th'];
+  var FULL=function(i){ if(i===0) return 'Hari kelahiran'; if(i<=11) return 'Usia '+i+' bulan'; return 'Usia '+(i-11)+' tahun'; };
+  var M=[
+    [],
+    [['Motorik','Mengangkat kepala sebentar saat tengkurap'],['Kognitif','Menatap wajah dan mengikuti benda dengan mata'],['Bahasa','Menangis dengan nada berbeda saat lapar atau tidak nyaman'],['Sosial','Tenang saat digendong dan diajak bicara']],
+    [['Sosial','Tersenyum membalas senyuman (senyum sosial)'],['Bahasa','Mengeluarkan suara "aaa", "ooo"'],['Motorik','Kepala makin tegak saat tengkurap'],['Kognitif','Mengikuti gerak benda dari satu sisi ke sisi lain']],
+    [['Motorik','Mengangkat dada dengan bertumpu pada lengan saat tengkurap'],['Motorik','Tangan lebih sering terbuka dan menggenggam mainan'],['Bahasa','Tertawa kecil dan mengoceh'],['Sosial','Mengenali wajah ayah dan ibu']],
+    [['Motorik','Kepala tegak stabil saat digendong'],['Motorik','Mulai berguling dari tengkurap ke telentang'],['Kognitif','Meraih mainan yang digantung'],['Sosial','Tertawa terbahak saat diajak bermain']],
+    [['Motorik','Berguling ke dua arah'],['Motorik','Memindahkan mainan dari satu tangan ke tangan lain'],['Bahasa','Mengoceh bersahutan saat diajak bicara'],['Kognitif','Memasukkan benda ke mulut untuk mengenali']],
+    [['Motorik','Duduk dengan bantuan atau bersandar'],['Kognitif','Siap mulai MPASI (sesuai anjuran dokter)'],['Bahasa','Mengoceh dengan suku kata seperti "ba-ba"'],['Sosial','Mulai membedakan orang yang dikenal dan orang asing']],
+    [['Motorik','Duduk sendiri tanpa ditopang'],['Kognitif','Mencari benda yang jatuh'],['Bahasa','Menoleh saat dipanggil namanya'],['Motorik','Mulai ngesot atau merayap']],
+    [['Motorik','Merangkak'],['Motorik','Menarik badan ke posisi duduk'],['Motorik','Menjumput makanan kecil dengan jari'],['Sosial','Cemas atau malu pada orang asing']],
+    [['Motorik','Berdiri sambil berpegangan'],['Sosial','Melambaikan tangan atau bilang "dada"'],['Bahasa','Mengerti arti kata "tidak"'],['Kognitif','Mengambil benda kecil dengan ibu jari dan telunjuk']],
+    [['Motorik','Merambat berpegangan pada furnitur'],['Bahasa','Mengucap "mama" atau "papa"'],['Sosial','Bermain cilukba'],['Kognitif','Menunjuk benda yang diinginkan']],
+    [['Motorik','Berdiri sebentar tanpa pegangan'],['Kognitif','Mengikuti perintah sederhana seperti "ambil bola"'],['Sosial','Meniru gerakan orang dewasa'],['Motorik','Minum dari gelas dengan bantuan']],
+    [['Motorik','Melangkah pertama kali atau berjalan dituntun'],['Bahasa','Mengucap 1 sampai 3 kata bermakna'],['Sosial','Bertepuk tangan dan meniru gerakan'],['Kognitif','Menunjuk untuk meminta atau menunjukkan sesuatu']],
+    [['Motorik','Berjalan lancar dan mulai berlari'],['Bahasa','Menyusun 2 kata, misalnya "mau makan"'],['Motorik','Menendang bola'],['Kognitif','Menyebutkan bagian tubuh']],
+    [['Motorik','Naik turun tangga dengan bantuan'],['Bahasa','Berbicara dalam kalimat 3 sampai 4 kata'],['Motorik','Menggambar garis dan lingkaran sederhana'],['Sosial','Bermain bersama teman dan belajar toilet training']],
+    [['Motorik','Melompat dengan satu kaki'],['Bahasa','Bercerita sederhana tentang kejadian sehari-hari'],['Kognitif','Mengenal beberapa warna dan angka'],['Sosial','Berpakaian dengan sedikit bantuan']],
+    [['Motorik','Melompat dan berlari dengan seimbang'],['Motorik','Menulis nama atau beberapa huruf'],['Kognitif','Menggambar orang dengan banyak bagian tubuh'],['Bahasa','Berbicara jelas dan berteman dengan baik']]
+  ];
+  var KEY='felicia_timeline_v1', COLW=104;
+  var S={name:'Felicia',birth:'2026-10-26',ref:'',checks:{},notes:{},sel:null};
+
+  function pad(n){return (n<10?'0':'')+n}
+  function toStr(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+  function parse(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2],12)}
+  function today(){var n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate(),12)}
+  function addM(d,n){return new Date(d.getFullYear(),d.getMonth()+n,d.getDate(),12)}
+  function days(a,b){return Math.round((a-b)/864e5)}
+  function fmt(d,short){return d.toLocaleDateString('id-ID',short?{day:'numeric',month:'short',year:'2-digit'}:{day:'numeric',month:'long',year:'numeric'})}
+  function esc(t){var e=document.createElement('div');e.textContent=t;return e.innerHTML}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({name:S.name,birth:S.birth,checks:S.checks,notes:S.notes}))}catch(e){}}
+  function load(){try{var r=JSON.parse(localStorage.getItem(KEY)||'null');if(r){S.name=r.name||S.name;S.birth=r.birth||S.birth;S.checks=r.checks||{};S.notes=r.notes||{}}}catch(e){}}
+
+  function ageText(b,r){
+    if(r<b) return 'Belum lahir';
+    var y=r.getFullYear()-b.getFullYear(), m=r.getMonth()-b.getMonth(), d=r.getDate()-b.getDate();
+    if(d<0){m--;d+=new Date(r.getFullYear(),r.getMonth(),0).getDate()}
+    if(m<0){y--;m+=12}
+    var o=[];if(y)o.push(y+' th');if(m)o.push(m+' bln');if(d||!o.length)o.push(d+' hr');
+    return o.join(' ');
+  }
+  function pct(i){var n=M[i].length;if(!n)return 0;var c=0;for(var j=0;j<n;j++)if(S.checks[i+'-'+j])c++;return Math.round(c/n*100)}
+
+  function calc(){
+    var b=parse(S.birth), r=parse(S.ref);
+    var nodes=OFFS.map(function(o){return addM(b,o)});
+    var pos;
+    if(r<=nodes[0]) pos=0;
+    else if(r>=nodes[16]) pos=16;
+    else{for(var i=0;i<16;i++){if(r>=nodes[i]&&r<nodes[i+1]){pos=i+(r-nodes[i])/(nodes[i+1]-nodes[i]);break}}}
+    var nxt=16;
+    for(var k=0;k<17;k++){if(nodes[k]>r){nxt=k;break}}
+    if(nodes[16]<=r) nxt=-1;
+    return {b:b,r:r,nodes:nodes,pos:pos,nxt:nxt};
+  }
+
+  function render(){
+    var keep=document.getElementById('scroll').scrollLeft;
+    var C=calc();
+    document.getElementById('nm').textContent=S.name||'Si Kecil';
+    document.title='Timeline Perkembangan '+(S.name||'Si Kecil');
+    document.getElementById('sub').textContent='Lahir '+fmt(C.b)+' · Hari H '+fmt(C.r);
+    if(S.sel===null) S.sel=C.nxt>=0?C.nxt:16;
+
+    // stats
+    var tot=0,chk=0;
+    for(var i=0;i<17;i++){tot+=M[i].length;for(var j=0;j<M[i].length;j++)if(S.checks[i+'-'+j])chk++}
+    var nx=C.nxt>=0?(LAB[C.nxt]+' · '+days(C.nodes[C.nxt],C.r)+' hari lagi'):'Semua titik terlewati';
+    document.getElementById('stats').innerHTML=
+      '<div class="stat s1"><small>Usia saat Hari H</small><b>'+ageText(C.b,C.r)+'</b><em>'+Math.max(0,days(C.r,C.b))+' hari sejak lahir</em></div>'+
+      '<div class="stat s2"><small>Progres timeline</small><b>'+Math.round(C.pos/16*100)+'%</b><em>menuju usia 5 tahun</em></div>'+
+      '<div class="stat s3"><small>Titik berikutnya</small><b>'+(C.nxt>=0?LAB[C.nxt]:'Selesai')+'</b><em>'+(C.nxt>=0?days(C.nodes[C.nxt],C.r)+' hari lagi':'')+'</em></div>'+
+      '<div class="stat s4"><small>Capaian dicentang</small><b>'+chk+' / '+tot+'</b><em>tahap perkembangan</em></div>';
+
+    // timeline
+    var W=COLW*17, h='';
+    h+='<div style="width:'+W+'px;position:relative">';
+    h+='<div class="track" style="left:'+COLW/2+'px;width:'+COLW*16+'px"></div>';
+    h+='<div class="fill" style="left:'+COLW/2+'px;width:'+(C.pos*COLW)+'px"></div>';
+    var mx=COLW/2+C.pos*COLW;
+    h+='<div class="marker" style="left:'+mx+'px"><div class="bubble">Hari H · '+ageText(C.b,C.r)+'</div></div>';
+    // grid lines in chart zone: chart top ~ 44+38+8+~36+10 = 136
+    h+='<div class="cols">';
+    for(var n=0;n<17;n++){
+      var cl=COLORS[n%6], st=C.nodes[n]<=C.r?'done':(n===C.nxt?'next':'');
+      var p=pct(n), bh=Math.round(p*0.88);
+      h+='<button class="col '+st+(n===S.sel?' sel':'')+'" data-i="'+n+'" style="--c:var('+cl[0]+');--k:var('+cl[1]+')">'+
+         '<div class="dot">'+DOT[n]+'</div>'+
+         '<div class="lbl">'+LAB[n]+'</div>'+
+         '<div class="dt">'+fmt(C.nodes[n],true)+'</div>'+
+         '<div class="chart">'+(n>0?'<div class="bar" style="height:'+bh+'px"><span class="pct">'+p+'%</span></div>':'')+'</div>'+
+         '</button>';
+    }
+    h+='</div></div>';
+    document.getElementById('tl').innerHTML=h;
+    var cols=document.querySelectorAll('.col');
+    for(var q=0;q<cols.length;q++){cols[q].addEventListener('click',function(){S.sel=+this.getAttribute('data-i');render();document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'nearest'})})}
+    var sc=document.getElementById('scroll');
+    if(S._first!==false){sc.scrollLeft=Math.max(0,mx-sc.clientWidth/2);S._first=false}else{sc.scrollLeft=keep}
+
+    renderDetail(C);
+  }
+
+  function renderDetail(C){
+    var i=S.sel, cl=COLORS[i%6], d=C.nodes[i];
+    var status=d<=C.r?'Sudah terlewati':(i===C.nxt?'Titik berikutnya':'Akan datang');
+    var diff=days(d,C.r);
+    var info=i===0?'Tanggal lahir: '+fmt(d):'Target tanggal: '+fmt(d)+(diff>0?' · '+diff+' hari lagi':(diff<0?' · '+(-diff)+' hari yang lalu':' · hari ini'));
+    var h='<div style="--c:var('+cl[0]+');--k:var('+cl[1]+')">';
+    h+='<div class="dhead"><h3>'+FULL(i)+'</h3><span class="chip">'+status+'</span></div>';
+    h+='<div class="dinfo">'+info+'</div>';
+    if(i===0){
+      h+='<div class="item" style="cursor:default"><span class="t">Selamat datang di dunia, '+esc(S.name||'Si Kecil')+'! Titik-titik perkembangan dimulai dari usia 1 bulan.</span></div>';
+    }else{
+      h+='<div class="items">';
+      for(var j=0;j<M[i].length;j++){
+        var k=i+'-'+j, ok=!!S.checks[k];
+        h+='<label class="item'+(ok?' ok':'')+'"><input type="checkbox" data-k="'+k+'"'+(ok?' checked':'')+'><span class="t"><span class="tag">'+M[i][j][0]+'</span><br>'+M[i][j][1]+'</span></label>';
+      }
+      h+='</div>';
+    }
+    h+='<textarea id="note" placeholder="Catatan (berat, tinggi, momen pertama kali, dll.)">'+esc(S.notes[i]||'')+'</textarea>';
+    h+='</div>';
+    var el=document.getElementById('detail');
+    el.innerHTML=h;
+    var cbs=el.querySelectorAll('input[type=checkbox]');
+    for(var a=0;a<cbs.length;a++){cbs[a].addEventListener('change',function(){
+      var k=this.getAttribute('data-k'); if(this.checked)S.checks[k]=1; else delete S.checks[k];
+      save();render();
+    })}
+    document.getElementById('note').addEventListener('input',function(){S.notes[i]=this.value;save()});
+  }
+
+  // settings
+  function bind(){
+    var inName=document.getElementById('inName'), inBirth=document.getElementById('inBirth'), inRef=document.getElementById('inRef');
+    inName.value=S.name; inBirth.value=S.birth; inRef.value=S.ref;
+    inName.addEventListener('input',function(){S.name=this.value;save();render()});
+    inBirth.addEventListener('change',function(){if(this.value){S.birth=this.value;S.sel=null;S._first=true;save();render()}});
+    inRef.addEventListener('change',function(){if(this.value){S.ref=this.value;S.sel=null;S._first=true;render()}});
+    document.getElementById('btnToday').addEventListener('click',function(){S.ref=toStr(today());inRef.value=S.ref;S.sel=null;S._first=true;render()});
+  }
+
+  load();
+  S.ref=toStr(today());
+  bind();
+  render();
+})();
+</script>
+</body>
+</html>
